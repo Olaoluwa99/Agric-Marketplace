@@ -1,4 +1,4 @@
-package com.test.agricMarketplace
+package com.test.growMe
 
 import org.junit.Test
 
