@@ -33,6 +33,10 @@ class CategoriesFragment : Fragment() {
     private lateinit var loadingText: TextView
     private lateinit var loadingProgress: ProgressBar
 
+    private var defaultCategoryTags = emptyList<String>()
+    private var refinedCategoryTags = emptyList<String>()
+    private var selectedCategoryTag = ""
+
     private val categoriesViewModel: CategoriesViewModel by activityViewModels()
 
     override fun onCreateView(
@@ -84,7 +88,10 @@ class CategoriesFragment : Fragment() {
 
                             //
                             categoriesViewModel.assignProducts(products)
-                            openCart.setOnClickListener { categoriesViewModel.addToCart(products[0]) }
+
+                            defaultCategoryTags = categoriesViewModel.getCategoryTags(products)
+                            refinedCategoryTags = categoriesViewModel.setDefinedTags(defaultCategoryTags)
+                            selectedCategoryTag = defaultCategoryTags[1]
                         }
                         true -> mainText.text = "---"
                     }
@@ -92,7 +99,15 @@ class CategoriesFragment : Fragment() {
             }
         }
 
-        openProducts.setOnClickListener { findNavController().navigate(R.id.action_categoriesFragment_to_productsFragment) }
+        openProducts.setOnClickListener {
+            //findNavController().navigate(R.id.action_categoriesFragment_to_productsFragment)
+
+            if (selectedCategoryTag.isNotBlank()){
+                findNavController().navigate(R.id.action_categoriesFragment_to_productsFragment, Bundle().apply {
+                    putString("categoryTag", selectedCategoryTag)
+                })
+            }
+        }
         //openCart.setOnClickListener { findNavController().navigate(R.id.action_categoriesFragment_to_cartFragment) }
     }
 
