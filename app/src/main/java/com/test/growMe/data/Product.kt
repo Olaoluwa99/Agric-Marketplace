@@ -1,31 +1,36 @@
 package com.test.growMe.data
 
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
-import com.google.gson.annotations.SerializedName
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
-/*@Serializable
-data class Products (
-    @SerialName("id"          ) var id          : Int?    = null,
-    @SerialName("title"       ) var title       : String? = null,
-    @SerialName("price"       ) var price       : Double? = null,
-    @SerialName("description" ) var description : String? = null,
-    @SerialName("category"    ) var category    : String? = null,
-    @SerialName("image"       ) var image       : String? = null,
-    @SerialName("rating"      ) var rating      : Rating? = Rating()
-)*/
-
-
-
-
-data class Products (
-
-    @SerializedName("id"          ) var id          : Int?    = null,
-    @SerializedName("title"       ) var title       : String? = null,
-    @SerializedName("price"       ) var price       : Double? = null,
-    @SerializedName("description" ) var description : String? = null,
-    @SerializedName("category"    ) var category    : String? = null,
-    @SerializedName("image"       ) var image       : String? = null,
-    @SerializedName("rating"      ) var rating      : Rating? = Rating()
-
+@Entity(tableName = "product")
+data class Product(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val title: String,
+    val price: Double,
+    val description: String,
+    val category: String,
+    val image: String,
+    val rating: Rating
 )
+
+data class Rating(
+    val rate: Double,
+    val count: Int
+)
+
+fun Product.toCartProduct(): CartProduct{
+    val rating = CartRating(rate = this.rating.rate, count = this.rating.count)
+    return CartProduct(
+        id = this.id,
+        title = this.title,
+        price = this.price,
+        description = this.description,
+        category = this.category,
+        image = this.image,
+        rating = rating
+    )
+}

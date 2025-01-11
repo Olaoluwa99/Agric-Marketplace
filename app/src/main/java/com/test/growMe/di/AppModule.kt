@@ -2,14 +2,11 @@ package com.test.growMe.di
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.test.growMe.data.Products
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import kotlinx.serialization.json.Json
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -69,7 +66,7 @@ object AppModule {
 }
 
 
-@Module
+/*@Module
 @InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
 
@@ -78,4 +75,4 @@ abstract class RepositoryModule {
     abstract fun bindMaterialRepository(
         materialRepositoryImpl: ProductsRepositoryImpl
     ): ProductsRepository
-}
+}*/
