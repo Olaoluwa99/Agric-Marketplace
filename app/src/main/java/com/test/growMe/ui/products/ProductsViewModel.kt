@@ -1,4 +1,4 @@
-package com.test.growMe.ui.categories
+package com.test.growMe.ui.products
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,10 +15,17 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CategoriesViewModel@Inject constructor(private val repository: ProductRepository): ViewModel() {
+class ProductsViewModel@Inject constructor(private val repository: ProductRepository, private val cartRepository: CartRepository): ViewModel() {
 
+    //
     private val _updateStatus = MutableStateFlow(Constants.INACTIVE)
     var updateStatus = _updateStatus.asStateFlow()
+
+    /*private val _categoryProducts = MutableStateFlow(emptyList<Product>())
+    var categoryProducts = _categoryProducts.asStateFlow()*/
+
+    private val _categoryProducts = MutableStateFlow<List<Product>>(emptyList())
+    val categoryProducts: StateFlow<List<Product>> = _categoryProducts
 
     private val _products = MutableStateFlow<List<Product>>(emptyList())
     val products: StateFlow<List<Product>> = _products
@@ -50,39 +57,26 @@ class CategoriesViewModel@Inject constructor(private val repository: ProductRepo
         }
     }
 
-    fun assignProducts(products: List<Product>){
+    fun setupProductsForCategory(tag: String){
+        val list = mutableListOf<Product>()
+        for (item in products.value){
+            if (item.category == tag){
+                list.add(item)
+            }
+        }
+        _categoryProducts.value = list
+    }
+
+    fun addToCart(product: Product){
+        _updateStatus.value = Constants.LOADING
         viewModelScope.launch {
             try {
-                repository.assignProducts(products)
+                cartRepository.addToCart(product.toCartProduct())
+                _updateStatus.value = Constants.SUCCESS
             } catch (e: Exception) {
-                // Handle exception
+                _updateStatus.value = Constants.FAILURE
             }
         }
-    }
-
-    fun getCategoryTags(productsList: List<Product>): List<String> {
-        val categoryTags = mutableListOf<String>()
-        for (item in productsList) {
-            if (item.category !in categoryTags) {
-                categoryTags.add(item.category)
-            }
-        }
-        return categoryTags
-    }
-
-    fun setDefinedTags(tagList: List<String>): List<String> {
-        val definedTags = mutableListOf<String>()
-
-        for (item in tagList){
-            when (item) {
-                "men's clothing" -> definedTags.add("Men's clothing")
-                "women's clothing" -> definedTags.add("Women's clothing")
-                "jewelery" -> definedTags.add("Jewelery")
-                "electronics" -> definedTags.add("Electronics")
-                else -> definedTags.add("Others")
-            }
-        }
-        return definedTags
     }
 
 }

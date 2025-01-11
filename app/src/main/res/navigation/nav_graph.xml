@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_categoriesFragment_to_productsFragment"
             app:destination="@id/productsFragment" />
+        <argument
+            android:name="categoryTag"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/cartFragment"
@@ -23,9 +26,5 @@
         android:id="@+id/productsFragment"
         android:name="com.test.growMe.ui.products.ProductsFragment"
         android:label="fragment_products"
-        tools:layout="@layout/fragment_products" >
-        <action
-            android:id="@+id/action_productsFragment_to_categoriesFragment"
-            app:destination="@id/categoriesFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_products" />
 </navigation>
